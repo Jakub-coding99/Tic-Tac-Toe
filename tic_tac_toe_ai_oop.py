@@ -100,7 +100,7 @@ class TicTacToe:
             return False
 
         def take_center():
-            if self.board[4] == 5:
+            if self.board[4] == "5":
                 self.board[4] = "O" 
                 return True
             return False
@@ -164,7 +164,7 @@ class TicTacToe:
                 self.current_user = "X"
                 self.run_game()
             elif play == "n":
-                print("Thank for playing!")
+                print("Thanks for playing!")
                 exit()
             else:
                 print("Invalid input. Type 'Y' or 'N': ")
@@ -204,7 +204,7 @@ class TicTacToe:
                 
 
             except ValueError:
-                    print("Wrong number. Type correct field number.")
+                print("Wrong number. Type correct field number.")
         self.restart_game()
 
 game = TicTacToe()
