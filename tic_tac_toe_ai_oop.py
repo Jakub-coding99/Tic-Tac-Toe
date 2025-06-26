@@ -1,21 +1,41 @@
 import random
 import os
+from wcwidth import wcswidth
 
 class TicTacToe:
     def __init__(self):
-        self.board =  [x for x in range(1,10)]
-        self.winning_combinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
-        self.current_user = "X"
+        self.board = [str(i) for i in range(1, 10)]
+        self.current_user = 'X'
+        self.symbols = {'X': '❌', 'O': '🔵'}
         self.game_is_over = False
+        self.winning_combinations = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ]
 
+    def render_cell(self, val, width=5):
+        if val in self.symbols:
+            symbol = self.symbols[val]
+        else:
+            symbol = val
+        actual_width = wcswidth(symbol)
+        padding = width - actual_width
+        left = padding // 2
+        right = padding - left
+        return ' ' * left + symbol + ' ' * right
+    
     def print_board(self):
-        print(
-                f"| {self.board[0]} | {self.board[1]} | {self.board[2]} | \n"
-                "-------------\n"
-                f"| {self.board[3]} | {self.board[4]} | {self.board[5]} | \n"
-                "------------\n"
-                f"| {self.board[6]} | {self.board[7]} | {self.board[8]} | \n"
-                )
+        b = self.board
+        row = lambda i: f"{self.render_cell(b[i])}|{self.render_cell(b[i+1])}|{self.render_cell(b[i+2])}"
+        sep = "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5
+        print()
+        print(row(0))
+        print(sep)
+        print(row(3))
+        print(sep)
+        print(row(6))
+        print()
 
     def check_win(self,player):
     
@@ -23,9 +43,11 @@ class TicTacToe:
             if all(self.board[pos] == player for pos in combo):
                 self.game_is_over = True
                 self.print_board()
-                print(f"{player} is Winner!")
-                
-                
+                if player == "X":
+                    print(f"{self.symbols["X"]} is Winner!")
+                else:
+                    print(f"{self.symbols["O"]} is Winner!")
+
                 return True
         return False
                 
@@ -41,19 +63,14 @@ class TicTacToe:
         return False
     
     def pc_turn(self):
-   
         if self.game_is_over:
             return
-    
         def take_random():
-            
             free = []
             for moves in self.board:
                 if moves != "O" and moves != "X":
                     free.append(moves)
-        
             rnd = random.choice(free) -1
-
             return rnd
 
         def try_win():
@@ -114,7 +131,6 @@ class TicTacToe:
 
         
         if self.check_win("O"):
-            
             return
             
         if self.check_draw():
@@ -144,7 +160,7 @@ class TicTacToe:
             if play == "y":
                 self.game_is_over = False
                 os.system('cls' if os.name == 'nt' else 'clear')
-                self.board = [x for x in range(1,10)]
+                self.board = [str(x) for x in range(1,10)]
                 self.current_user = "X"
                 self.run_game()
             elif play == "n":
@@ -158,8 +174,10 @@ class TicTacToe:
         print("Welcome to Tic Tac Toe!")
         self.print_board()
         while self.game_is_over == False:
-            
-            print(f"{self.current_user} on turn: ")
+            if self.current_user == "X":
+                print(f"{self.symbols["X"]} on turn: ")
+            else:
+                print(f"{self.symbols["O"]} on turn: ")
             try:
                 choose = int(input("Type a number of field (1-9) :  ")) 
                 if choose < 1 or choose > 9:
